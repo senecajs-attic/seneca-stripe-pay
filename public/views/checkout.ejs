@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="https://checkout.stripe.com/v2/checkout.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.js"></script>
+
+</head>
+<body>
+
+<form>
+
+  <script>
+  var openStripeCheckout = function() {
+    var token = function(res){
+      var $input = $('<input type=hidden name=stripeToken />').val(res.id);
+      $('form').attr('action', '<%-returnUrl%>');
+      $('form').append($input).submit();
+    };
+
+    StripeCheckout.open({
+      key: '<%-stripeKey%>',
+      <% if (typeof showAddress !== 'undefined') { %> address: <%-showAddress%>, <% } %>
+      amount: <%-amount%>,
+      <% if (typeof currencyCode !== 'undefined') { %> currency: '<%-currencyCode%>', <% } %>
+      <% if (typeof companyName !== 'undefined') { %> name: '<%-companyName%>', <% } %>
+      <% if (typeof brandImage !== 'undefined') { %> image: '<%-brandImage%>', <% } %>
+      <% if (typeof description !== 'undefined') { %> description: '<%-description%>', <% } %>
+      <% if (typeof panelTitle !== 'undefined') { %> panelLabel: '<%-panelTitle%>', <% } %>
+      <% if (typeof submitText !== 'undefined') { %> label: '<%-submitText%>', <% } %>
+      token: token,
+      closed: stripeClosed
+    })
+
+    return false
+  }
+
+  var stripeClosed = function() {
+    var $input = $('<input type=hidden name=stripeCancelled />').val(1);
+    $('form').attr('method', 'POST');
+    $('form').attr('action', '<%-returnUrl%>');
+    $('form').append($input).submit();
+  }
+
+  $(function() {
+    setTimeout(openStripeCheckout, 100);
+  })
+  </script>
+
+</form>
+
+</body>
+</html>
+
