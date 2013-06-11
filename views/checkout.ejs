@@ -7,20 +7,28 @@
 </head>
 <body>
 
-<form>
+<form method="POST">
+
+  <input name="amount" type="hidden" value="<%-amount%>" />
+  <input name="currencyCode" type="hidden" value="<%-currencyCode%>" />
+  <input name="description" type="hidden" value="<%-description%>" />
+  <input name="refno" type="hidden" value="<%-refno%>" />
 
   <script>
+  var submitted = false;
+
   var openStripeCheckout = function() {
     var token = function(res){
+      submitted = true;
       var $input = $('<input type=hidden name=stripeToken />').val(res.id);
-      $('form').attr('action', '<%-returnUrl%>');
+      $('form').attr('action', '<%-completeCallbackUrl%>');
       $('form').append($input).submit();
     };
 
     StripeCheckout.open({
       key: '<%-stripeKey%>',
       <% if (typeof showAddress !== 'undefined') { %> address: <%-showAddress%>, <% } %>
-      amount: <%-amount%>,
+      amount: parseFloat('<%-amount%>')*100,
       <% if (typeof currencyCode !== 'undefined') { %> currency: '<%-currencyCode%>', <% } %>
       <% if (typeof companyName !== 'undefined') { %> name: '<%-companyName%>', <% } %>
       <% if (typeof brandImage !== 'undefined') { %> image: '<%-brandImage%>', <% } %>
@@ -29,16 +37,17 @@
       <% if (typeof submitText !== 'undefined') { %> label: '<%-submitText%>', <% } %>
       token: token,
       closed: stripeClosed
-    })
+    });
 
     return false
   }
 
   var stripeClosed = function() {
-    var $input = $('<input type=hidden name=stripeCancelled />').val(1);
-    $('form').attr('method', 'POST');
-    $('form').attr('action', '<%-returnUrl%>');
-    $('form').append($input).submit();
+    if (!submitted) {
+      $('form').attr('method', 'GET');
+      $('form').attr('action', '<%-cancelCallbackUrl%>');
+      $('form').submit();
+    }
   }
 
   $(function() {
