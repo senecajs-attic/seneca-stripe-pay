@@ -1,5 +1,5 @@
 # seneca-stripe-pay - Node.js module
-
+ 
 ## Stripe payments strategy for seneca-pay <a href="https://github.com/rjrodger/seneca">Seneca</a> plugin
 
 Dependencies: [seneca-pay](/iantocristian/seneca-pay)
