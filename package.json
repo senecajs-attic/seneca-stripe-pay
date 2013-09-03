@@ -1,6 +1,6 @@
 {
   "name": "seneca-stripe-pay",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Stripe pay strategy for the Seneca payment plugin",
   "main": "lib/main.js",
   "scripts": {
